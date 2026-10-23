@@ -1,0 +1,383 @@
+
+package net.datastructures;
+
+import java.lang.reflect.InvocationTargetException;
+
+public class DoublyLinkedList<E> implements Cloneable {
+
+	// ---------------- nested Node class ----------------
+	/**
+	 * Node of a doubly linked list, which stores a reference to its element and to
+	 * both the previous and next node in the list.
+	 */
+	private static class Node<E> {
+
+		/** The element stored at this node */
+		private E element; // reference to the element stored at this node
+
+		/** A reference to the preceding node in the list */
+		private Node<E> prev; // reference to the previous node in the list
+
+		/** A reference to the subsequent node in the list */
+		private Node<E> next; // reference to the subsequent node in the list
+
+		/**
+		 * Creates a node with the given element and next node.
+		 *
+		 * @param e the element to be stored
+		 * @param p reference to a node that should precede the new node
+		 * @param n reference to a node that should follow the new node
+		 */
+		public Node(E e, Node<E> p, Node<E> n) {
+			element = e;
+			prev = p;
+			next = n;
+		}
+
+		// public accessor methods
+		/**
+		 * Returns the element stored at the node.
+		 * 
+		 * @return the element stored at the node
+		 */
+		public E getElement() {
+			return element;
+		}
+
+		/**
+		 * Returns the node that precedes this one (or null if no such node).
+		 * 
+		 * @return the preceding node
+		 */
+		public Node<E> getPrev() {
+			return prev;
+		}
+
+		/**
+		 * Returns the node that follows this one (or null if no such node).
+		 * 
+		 * @return the following node
+		 */
+		public Node<E> getNext() {
+			return next;
+		}
+
+		// Update methods
+		/**
+		 * Sets the node's previous reference to point to Node n.
+		 * 
+		 * @param p the node that should precede this one
+		 */
+		public void setPrev(Node<E> p) {
+			prev = p;
+		}
+
+		/**
+		 * Sets the node's next reference to point to Node n.
+		 * 
+		 * @param n the node that should follow this one
+		 */
+		public void setNext(Node<E> n) {
+			next = n;
+		}
+	} // ----------- end of nested Node class -----------
+
+	// instance variables of the DoublyLinkedList
+	/** Sentinel node at the beginning of the list */
+	private Node<E> header; // header sentinel
+
+	/** Sentinel node at the end of the list */
+	private Node<E> trailer; // trailer sentinel
+
+	/** Number of elements in the list (not including sentinels) */
+	private int size = 0; // number of elements in the list
+
+	/** Constructs a new empty list. */
+	public DoublyLinkedList() {
+		header = new Node<>(null, null, null); // create header
+		trailer = new Node<>(null, header, null); // trailer is preceded by header (element, prev, next)
+		header.setNext(trailer); // header is followed by trailer
+	}
+
+	// public accessor methods
+	/**
+	 * Returns the number of elements in the linked list.
+	 * 
+	 * @return number of elements in the linked list
+	 */
+	public int size() {
+		return size;
+	}
+
+	/**
+	 * Tests whether the linked list is empty.
+	 * 
+	 * @return true if the linked list is empty, false otherwise
+	 */
+	public boolean isEmpty() {
+		return size == 0;
+	}
+
+	/**
+	 * Returns (but does not remove) the first element of the list.
+	 * 
+	 * @return element at the front of the list (or null if empty)
+	 */
+	public E first() {
+		if (isEmpty())
+			return null; // not element in the list
+		return header.getNext().getElement(); // first element is beyond header ([header] -> head("LOL"))
+	}
+
+	/**
+	 * Returns (but does not remove) the last element of the list.
+	 * 
+	 * @return element at the end of the list (or null if empty)
+	 */
+	public E last() {
+		if (isEmpty())
+			return null;
+		return trailer.getPrev().getElement(); // last element is before trailer( prev("salmon") <= [trailer])
+	}
+
+	// public update methods
+	/**
+	 * Adds an element to the front of the list.
+	 * 
+	 * @param e the new element to add
+	 */
+	public void addFirst(E e) {
+		addBetween(e, header, header.getNext()); // place just after the header (element, prev,next)
+	}
+
+	/**
+	 * Adds an element to the end of the list.
+	 * 
+	 * @param e the new element to add
+	 */
+	public void addLast(E e) {
+		addBetween(e, trailer.getPrev(), trailer); // place just before the trailer (element, prev,next)
+	}
+
+	/**
+	 * Removes and returns the first element of the list.
+	 * 
+	 * @return the removed element (or null if empty)
+	 */
+	public E removeFirst() {
+		if (isEmpty())
+			return null; // nothing to remove
+		return remove(header.getNext()); // first element is beyond header
+	}
+
+	/**
+	 * Removes and returns the last element of the list.
+	 * 
+	 * @return the removed element (or null if empty)
+	 */
+	public E removeLast() {
+		if (isEmpty())
+			return null; // nothing to remove
+		return remove(trailer.getPrev()); // last element is before trailer
+	}
+
+	// private update methods
+	/**
+	 * Adds an element to the linked list in between the given nodes. The given
+	 * predecessor and successor should be neighboring each other prior to the call.
+	 *
+	 * @param predecessor node just before the location where the new element is
+	 *                    inserted
+	 * @param successor   node just after the location where the new element is
+	 *                    inserted
+	 */
+	private void addBetween(E e, Node<E> predecessor, Node<E> successor) {
+		// create and link a new node
+		Node<E> newest = new Node<>(e, predecessor, successor);
+		predecessor.setNext(newest);
+		successor.setPrev(newest);
+		size++;
+	}
+
+	/**
+	 * Removes the given node from the list and returns its element.
+	 * 
+	 * @param node the node to be removed (must not be a sentinel)
+	 */
+	private E remove(Node<E> node) {
+		Node<E> predecessor = node.getPrev();
+		Node<E> successor = node.getNext();
+		predecessor.setNext(successor);
+		successor.setPrev(predecessor);
+		size--;
+		return node.getElement();
+	}
+
+	public void addPos(E e, int n) throws IndexOutOfBoundsException {
+		if (n < 0 || n > size)
+			throw new IndexOutOfBoundsException("Indice Invalido: " + n);
+		if (n == 0) {
+			addFirst(e);
+			return;
+		}
+
+		if (n == size) {
+			addLast(e);
+			return;
+		}
+		Node<E> actual;
+		if (n <= size / 2) {
+			actual = header.getNext();
+			for (int i = 0; i < n - 1; i++)
+				actual = actual.getNext();
+		} else {
+			actual = trailer.getPrev();
+			for (int i = size - 1; i > n; i--)
+				actual = actual.getPrev();
+
+			actual = actual.getPrev();
+		}
+		addBetween(e, actual, actual.getNext());
+
+	}
+
+	public E removeElement(E e) {
+		if (isEmpty())
+			return null;
+
+		Node<E> actual = header.getNext();
+		while (actual != trailer) {
+			if (actual.getElement().equals(e))
+				return remove(actual);
+			actual = actual.getNext();
+		}
+
+		return null;
+	}
+
+	public E removePos(int n) throws IndexOutOfBoundsException {
+		if (n < 0 || n > size)
+			throw new IndexOutOfBoundsException("Indice invalido: " + n);
+		if (n == 0)
+			return removeFirst();
+
+		if (n == size - 1)
+			return removeLast();
+
+		Node<E> actual;
+		if (n <= size / 2) {
+			actual = header.getNext();
+			for (int i = 0; i < n; i++)
+				actual = actual.getNext();
+		} else {
+			actual = trailer.getPrev();
+			for (int i = size - 1; i > n; i--)
+				actual = actual.getPrev();
+
+		}
+
+		return remove(actual);
+
+	}
+
+	public E search(E e) {
+		Node<E> actual = header.getNext();
+		while (actual != trailer) {
+			if (actual.getElement().equals(e))
+				return actual.getElement();
+			actual = actual.getNext();
+
+		}
+		return null;
+		
+	}
+	
+
+	public void concatenate(DoublyLinkedList<E> l) {
+		if(l.isEmpty())
+			return;
+		// El ultimo nodo real de esta lista se conecta al primer nodo real de l
+		Node<E> myLastReal = trailer.getPrev();
+		Node<E> lFirstReal = l.header.getNext();
+		Node<E> lLastReal = l.trailer.getPrev();
+
+		// Desconectar los centinelas internos y unir las cadenas reales
+		myLastReal.setNext(lFirstReal);
+		lFirstReal.setPrev(myLastReal);
+		
+		// El trailer de esta lista ahora cierra despues del ultimo nodo de l
+		lLastReal.setNext(trailer);
+		trailer.setNext(lLastReal);
+		
+		size += l.size;
+		
+		// Dejar l en estado vacio y consistente para evitar nodos no compartidos
+		l.header.setNext(l.trailer);
+		l.trailer.setPrev(l.header);
+		l.size = 0;
+		
+	}
+	
+	// Clon superficial: nuevos nodos, mismos objetos E
+	@SuppressWarnings("unchecked")
+	public DoublyLinkedList<E> clone() throws CloneNotSupportedException {
+	    DoublyLinkedList<E> other = (DoublyLinkedList<E>) super.clone();
+	    other.header  = new Node<>(null, null, null);
+	    other.trailer = new Node<>(null, other.header, null);
+	    other.header.setNext(other.trailer);
+	    other.size = 0;
+
+	    Node<E> walk = header.getNext();
+	    while (walk != trailer) {
+	        other.addLast(walk.getElement()); // mismo objeto E
+	        walk = walk.getNext();
+	    }
+	    return other;
+	}
+
+	// Clon profundo: nuevos nodos Y nuevos objetos E (requiere que E implemente clone())
+	@SuppressWarnings("unchecked")
+	public DoublyLinkedList<E> clone1() throws CloneNotSupportedException {
+	    DoublyLinkedList<E> other = (DoublyLinkedList<E>) super.clone();
+	    other.header  = new Node<>(null, null, null);
+	    other.trailer = new Node<>(null, other.header, null);
+	    other.header.setNext(other.trailer);
+	    other.size = 0;
+
+	    Node<E> walk = header.getNext();
+	    while (walk != trailer) {
+	        E elementoClon = null;
+	        try {
+	            elementoClon = (E) walk.getElement().getClass()
+	                               .getMethod("clone")
+	                               .invoke(walk.getElement()); // clon del objeto E
+	        } catch (IllegalAccessException | InvocationTargetException |
+	                 NoSuchMethodException e) {
+	            e.printStackTrace();
+	        }
+	        other.addLast(elementoClon);
+	        walk = walk.getNext();
+	    }
+	    return other;
+	}
+	
+	
+	
+
+	/**
+	 * Produces a string representation of the contents of the list. This exists for
+	 * debugging purposes only.
+	 */
+	public String toString() {
+		StringBuilder sb = new StringBuilder("(");
+		Node<E> walk = header.getNext();
+		while (walk != trailer) {
+			sb.append(walk.getElement());
+			walk = walk.getNext();
+			if (walk != trailer)
+				sb.append(", ");
+		}
+		sb.append(")");
+		return sb.toString();
+	}
+} // ----------- end of DoublyLinkedList class -----------

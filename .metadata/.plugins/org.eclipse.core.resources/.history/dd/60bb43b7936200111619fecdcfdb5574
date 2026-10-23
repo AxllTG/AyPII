@@ -1,0 +1,159 @@
+package colectivos.datos;
+
+import java.io.FileNotFoundException;
+import java.io.InputStream;
+import java.util.Scanner;
+
+import colectivos.modelo.Linea;
+import colectivos.modelo.Parada;
+import excepciones.LineaNotFoundException;
+import excepciones.ParadaNotFoundException;
+import net.datastructures.TreeMap;
+
+
+public class Datos {
+	
+	/**
+	 * Loads bus stops from the provided input stream.
+	 * Each line in the input should have the format: {@code id;direccion}.
+	 * Lines starting with '#' or blank lines are ignored.
+	 * @param inputParadas Input stream containing the stop data.
+	 * @return A TreeMap where the key is the stop ID and the value is the corresponding Parada object
+	 * @throws FileNotFoundException If the input stream is invalid or not found.
+	 * */
+	public static TreeMap<Integer, Parada> cargarParadas(InputStream inputParadas) throws FileNotFoundException {
+		
+		TreeMap<Integer, Parada> paradas = new TreeMap<Integer, Parada>();
+		
+		try(Scanner read = new Scanner(inputParadas)){
+			
+			while(read.hasNext()) {
+				
+				String linea = read.nextLine();
+				if(linea.isBlank() || linea.startsWith("#")) continue;
+				
+				String partes[] = linea.split(";");
+				
+				int codigo = Integer.parseInt(partes[0].trim());
+				String direccion = partes[1].trim();
+				
+				paradas.put(codigo, new Parada(codigo, direccion));
+			}
+		}
+		return paradas;
+	}
+	
+	/**
+	 * Loads bus lines from the given input stream and associates them 
+	 * with their corresponding stops.
+	 * Each line in the input must follow the format: {@code codigoLinea;idParada1;idParada2;...}.
+	 * Lines starting with '#' or empty lines are ignored.
+	 * @param inputLinea Input stream containing the line data.
+	 * @param paradas    Map of all available bus stops, indexed by their IDs.
+	 * @return A TreeMap where each key is a line code and the value is a {@code Linea} object
+	 * with its associates stops.
+	 * @throws ParadaNotFoundException If a stop ID in the input does not exist in the 
+	 * {@code paradas} map.
+	 * */
+	
+	public static TreeMap<String, Linea> cargarLineas(InputStream inputLinea, TreeMap<Integer, Parada> paradas) throws ParadaNotFoundException{
+		
+		TreeMap<String, Linea> lineas = new TreeMap<String, Linea>();
+		
+		try(Scanner read = new Scanner(inputLinea)) {
+			
+			while(read.hasNextLine()) {
+				String line = read.nextLine().trim();
+				if(line.isEmpty() || line.startsWith("#")) continue;
+				
+				String partes[] = line.split(";");
+				String codigo = partes[0];
+				Linea lineaObjeto = new Linea(codigo);	
+				
+				boolean esIda = codigo.endsWith("I");
+				
+				for(int i = 1; i < partes.length; i++) {
+					String idString = partes[i].trim();
+					if(!idString.isEmpty()) {
+						int idParada = Integer.parseInt(idString);
+						Parada parada = paradas.get(idParada);
+						if(parada == null) 
+							throw new ParadaNotFoundException(idParada);
+							
+						if(esIda)
+							lineaObjeto.agregarParadaIda(parada);
+						else 
+							lineaObjeto.agregarParadaVuelta(parada);
+					}
+				}
+				lineas.put(codigo, lineaObjeto);
+			}
+		}
+		return lineas;
+		
+-	}
+	
+	/**
+	 * Loads and adds the route to each bus line from the given input stream.
+	 * @param inputLinea Input stream containing the line-to-route mappings.
+	 * @param lineas     Map of all bus lines identifies by their codes.
+	 * @param paradas    Map of all stops, indexed by their IDs.
+	 * @throws LineaNotFoundException If a line code is not found in the {@code lineas} map.
+	 * @throws ParadaNotFoundException If a stop ID is not found in the {@code paradas} map.
+	 * @throws FileNotFoundException If there is an issue reading the input stream.
+	 * */
+	public static void cargarRuta(InputStream inputLinea, TreeMap<String, Linea> lineas, TreeMap<Integer, Parada> paradas) throws FileNotFoundException, LineaNotFoundException, ParadaNotFoundException{
+		
+		try(Scanner read = new Scanner(inputLinea)){
+			
+			while(read.hasNext()) {
+			String completeLine = read.next().trim();
+			
+				if(!completeLine.isEmpty() && !completeLine.startsWith("#")) {
+					String data[] = completeLine.split(";");
+				
+					String dataLinea = data[0]; // data[0] = "L1I", data[1] = "88", data[2] = "97", data[3] = "44"
+					Linea linea = lineas.get(dataLinea);
+				
+					if(linea == null)
+						throw new LineaNotFoundException(dataLinea);
+				
+					for(int i = 1; i < data.length; i++) {
+					
+						String paradaString = data[i].trim(); // stores Parada's text as a string
+					
+						if(dataLinea.endsWith("I")) {
+							if(!paradaString.isEmpty()) {
+								try {
+									int idParada = Integer.parseInt(paradaString); // tries to convert it from string to int
+									Parada parada = paradas.get(idParada); // checks if there's a Parada with that id in the map
+									if(parada == null)
+										throw new ParadaNotFoundException(idParada);
+									linea.agregarParadaIda(parada);
+								}catch(NumberFormatException e) {
+									System.err.println("ID de parada inválido: " + paradaString);
+								}
+							}
+						}else if(dataLinea.endsWith("R")) {
+							if(!paradaString.isEmpty()) {
+								
+								try {
+									int idParada = Integer.parseInt(paradaString); // tries to convert it from string to int
+									Parada parada = paradas.get(idParada); // checks if there's a Parada with that id in the map
+									if(parada == null)
+										throw new ParadaNotFoundException(idParada);
+									linea.agregarParadaVuelta(parada);
+								}catch(NumberFormatException e) {
+									System.err.println("ID de parada inválido: " + paradaString);
+								}
+							}
+						}else {
+							System.err.println("Nombre de la línea inválido " + dataLinea);
+						}
+					}
+				}
+			}
+		}
+	}
+	
+}

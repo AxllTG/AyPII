@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;Alumno.java&apos; to &apos;iquals.Alumno.java&apos;&#x0D;&#x0A;- Original project: &apos;Iquals&apos;&#x0D;&#x0A;- Destination element: &apos;iquals.Alumno.java&apos;&#x0D;&#x0A;- Original element: &apos;iquals.Alumno.java&apos;" description="Copy compilation unit" destination="/src&lt;iquals{Alumno.java" element1="/src&lt;iquals{Alumno.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1775756469346" units="1" version="1.0"/>
+</session>

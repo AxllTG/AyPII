@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename package &apos;binarySearch&apos; to &apos;Search&apos;&#x0D;&#x0A;- Original project: &apos;EjemploBinarySearch&apos;&#x0D;&#x0A;- Original element: &apos;EjemploBinarySearch/src/binarySearch&apos;&#x0D;&#x0A;- Renamed element: &apos;EjemploBinarySearch/src/Search&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename package &apos;binarySearch&apos;" flags="589830" hierarchical="false" id="org.eclipse.jdt.ui.rename.package" input="/src&lt;binarySearch" name="Search" qualified="false" references="true" stamp="1779038492618" textual="false" version="1.0"/>
+</session>

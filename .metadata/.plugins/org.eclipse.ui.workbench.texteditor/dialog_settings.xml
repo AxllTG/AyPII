@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<section name="Workbench">
+	<section name="org.eclipse.ui.texteditor.GotoLineAction$GotoLineDialog_dialogBounds">
+		<item key="DIALOG_X_ORIGIN" value="268"/>
+		<item key="DIALOG_Y_ORIGIN" value="247"/>
+	</section>
+	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
+		<item key="casesensitive" value="false"/>
+		<item key="wholeword" value="false"/>
+		<item key="isRegEx" value="false"/>
+		<item key="selection" value=""/>
+		<list key="findhistory">
+			<item value="14"/>
+			<item value="toLowe"/>
+			<item value="prestar"/>
+			<item value="cola"/>
+			<item value="duplica"/>
+			<item value="keySet"/>
+			<item value="        for(String token : tokens) {&#x0A;&#x0A;            if(esNumero(token)) {&#x0A;                pila.push(Double.parseDouble(token));&#x0A;            }&#x0A;            else {&#x0A;&#x0A;                double b = pila.pop();&#x0A;                double a = pila.pop();&#x0A;&#x0A;                switch(token) {&#x0A;&#x0A;                    case &quot;+&quot;:&#x0A;                        pila.push(a + b);&#x0A;                        break;&#x0A;&#x0A;                    case &quot;-&quot;:&#x0A;                        pila.push(a - b);&#x0A;                        break;&#x0A;&#x0A;                    case &quot;*&quot;:&#x0A;                        pila.push(a * b);&#x0A;                        break;&#x0A;&#x0A;                    case &quot;/&quot;:&#x0A;                        pila.push(a / b);&#x0A;                        break;&#x0A;                }&#x0A;            }&#x0A;        }&#x0A;&#x0A;        System.out.println(&quot;\nResultado = &quot; + pila.pop());&#x0A;    }&#x0A;"/>
+			<item value="|"/>
+		</list>
+		<list key="replacehistory">
+		</list>
+	</section>
+	<section name="java.lang.Class">
+		<item key="replaceBarOpen" value="false"/>
+		<list key="findhistory">
+			<item value="14"/>
+			<item value="println"/>
+		</list>
+	</section>
+</section>

@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Copy element &apos;SinglyLinkedList.java&apos; to &apos;Recuperatorio_Parcial_2020/src/net.datastructures&apos;&#x0D;&#x0A;- Original project: &apos;PruebaSinglyLinkedList&apos;&#x0D;&#x0A;- Destination element: &apos;Recuperatorio_Parcial_2020/src/net.datastructures&apos;&#x0D;&#x0A;- Original element: &apos;net.datastructure.SinglyLinkedList.java&apos;" description="Copy compilation unit" destination="=Recuperatorio_Parcial_2020/src&lt;net.datastructures" element1="/src&lt;net.datastructure{SinglyLinkedList.java" files="0" flags="589830" folders="0" id="org.eclipse.jdt.ui.copy" policy="org.eclipse.jdt.ui.copyResources" stamp="1776975713343" units="1" version="1.0"/>
+</session>
